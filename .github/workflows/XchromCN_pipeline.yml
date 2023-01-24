@@ -1,0 +1,21 @@
+name: XchromCN Docker Pipeline
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  xchromCN:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker container
+      run: |
+        docker build -t xchromcn_docker -f Docker/Dockerfile .
+
+    - name: Run pipeline on BAM files
+      run: |
+        docker run -v $(pwd)/data:/data xchromcn_docker bash scripts/run_pipeline.sh
